@@ -7,32 +7,34 @@
 ###Model
 
 ``User``
-INT id, TEXT username, TEXT password, TEXT portrait, INT contact_id, TEXT location, INT gender
+``INT id, TEXT username, TEXT password, TEXT VoIP, TEXT VoIP_Token, TEXT portrait, INT contact_id, TEXT location, INT gender``
 
 ``Contact``
-INT id, TEXT contacts(json)
+``INT id, TEXT contacts(json)``
 
 ``Moments``
-INT id, INT sender, TEXT mentioned(json), TEXT content, TEXT comments(json)
+``INT id, INT sender, TEXT mentioned(json), TEXT content, TEXT comments(json)``
 
 ``Comments``
-INT id, TEXT mentioned(json), TEXT content
+``INT id, TEXT mentioned(json), TEXT content``
 
 ``Message``
-INT id, INT sender, INT receiver, TEXT content
+``INT id, INT sender, INT receiver, TEXT content``
 
 ###API
 
 ####用户操作
 
-#####添加用户
+#####注册用户
 
 ```
 POST http://ip/users/
 
 {
   "username": a,
-  "password": b
+  "password": b,
+  "VoIP": c,
+  "VoIP_Token: d
 }
 ```
 
@@ -49,7 +51,7 @@ PUT http://ip/users/id
 }
 ```
 
-更新用户分组
+#####更新用户分组
 
 ```
 PUT http://ip/user/user_id/contact/
