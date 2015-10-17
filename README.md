@@ -7,7 +7,7 @@
 ###Model
 
 ``User``
-``INT id, TEXT username, TEXT password, TEXT VoIP, TEXT VoIP_Token, TEXT portrait, INT contact_id, TEXT location, INT gender``
+``INT id, TEXT username, TEXT password, TEXT portrait, INT contact_id, TEXT location, INT gender``
 
 ``Contact``
 ``INT id, TEXT contacts(json)``
