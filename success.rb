@@ -16,6 +16,10 @@ module Success
       Success.__basic_success(202, "register success")
     end
 
+    def self.update_contacts_success
+      Success.__basic_success(203, "contact updated")
+    end
+
   end
 
 end

@@ -28,7 +28,7 @@
 #####注册用户
 
 ```
-POST http://ip/users/
+POST http://ip/users/:username
 
 {
   "username": a,
@@ -50,7 +50,7 @@ POST http://ip/login
 #####更新用户信息
 
 ```
-PUT http://ip/users/id
+PUT http://ip/users/:username
 
 {
   "password": a,
@@ -60,17 +60,42 @@ PUT http://ip/users/id
 }
 ```
 
+#####检查用户是否存在
+
+```
+GET http://ip/users/:username
+
+return 1 if exists, else 0
+```
+
+#####获得用户分组
+
+```
+GET http://ip/user/:username/contacts
+
+return json
+{
+  contact:
+  [
+    "group_name": a,
+    "friends": [username0, username1, ...]
+  ],
+  ...
+}
+
+```
+
 #####更新用户分组
 
 ```
-PUT http://ip/user/user_id/contact/
+PUT http://ip/user/:username/contacts
 
 {
-  "contacts":
+  contacts:
   [
     {
-      "groupname": a,
-      "users": [uid0, uid1...]
+      "group_name": a,
+      "friends": [usn0, usn1...]
     },
     ...
   ]

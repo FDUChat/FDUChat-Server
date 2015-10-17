@@ -10,6 +10,7 @@ set :bind, '0.0.0.0'
 set :database, "mysql://root@127.0.0.1:3306/FDUChat"
 
 require_relative 'model/users'
+require_relative 'model/contacts'
 
 get "/" do
   if (params[:u])
@@ -51,7 +52,9 @@ end
 
 get "/users/:username" do
   if Users.where(:username => params[:username]).size == 1
-    return Error::UserOPs.user_exists
+    return 1
+  else
+    return 0
   end
 end
 
@@ -76,4 +79,45 @@ post "/users/:username" do
     return Error::UserOPs.passwd_missed
   end
   Success::UserOPs.register_success
+end
+
+#get contact info
+get "/users/:username/contacts" do
+  user = Users.where(:username => params[:username])
+  if user.size == 0
+    return Error::UserOPs.no_user
+  else
+    user = user.first
+    if not user.contactid?
+      cts = Contacts.new do |c|
+        c.contacts = JSON.generate({"contacts"=>""})
+        c.save
+      end
+      user.contactid = cts.id
+    else
+      cts = Contacts.find(user.contactid)
+    end
+  end
+  cts.contacts
+end
+
+#add contact
+post "/users/:username/contacts" do
+  user = Users.where(:username => params[:username])
+  if user.size == 0
+    return Error::UserOPs.no_user
+  else
+    user = user.first
+    if not user.contactid?
+      cts = Contacts.new do |c|
+        c.contacts = request.body.string
+        c.save
+      end
+      user.contactid = cts.id
+    else
+      cts = Contacts.find(user.contactid)
+      cts.contacts = request.body.string
+    end
+  end
+  Success::UserOPs.update_contacts_success
 end
