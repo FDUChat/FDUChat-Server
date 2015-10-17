@@ -32,9 +32,18 @@ POST http://ip/users/
 
 {
   "username": a,
-  "password": b,
-  "VoIP": c,
-  "VoIP_Token: d
+  "password": b
+}
+```
+
+#####用户登录
+
+```
+POST http://ip/login
+
+{
+  "username": a,
+  "password": b
 }
 ```
 
