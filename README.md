@@ -101,3 +101,18 @@ PUT http://ip/user/:username/contacts
   ]
 }
 ```
+
+####消息操作
+
+#####发送消息
+
+```
+POST http://ip/message/send
+
+{
+  "sender": a,
+  "message": b,
+  "alias": [a0, a1, a2, ...]
+}
+
+```

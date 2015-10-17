@@ -3,8 +3,10 @@ require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'mysql'
 require 'json'
+require 'jpush'
 require_relative 'error'
 require_relative 'success'
+require_relative 'config'
 
 set :bind, '0.0.0.0'
 set :database, "mysql://root@127.0.0.1:3306/FDUChat"
@@ -120,4 +122,28 @@ post "/users/:username/contacts" do
     end
   end
   Success::UserOPs.update_contacts_success
+end
+
+#send message
+post "/message/send" do
+  client = JPush::JPushClient.new($AppKey, $MasterSecret)
+  begin
+    data = JSON.parse(request.body.string)
+  rescue
+    return Error.json_fault
+  end
+  payload = JPush::PushPayload.build(
+    platform: JPush::Platform.all,
+    message: JPush::Message.build(
+      msg_content: data["message"],
+      extras: {
+        "sender" => data["sender"]
+      }
+    ),
+    audience: JPush::Audience.build(
+      _alias: data["alias"]
+    )
+  )
+  res = client.sendPush(payload)
+  res.toJSON
 end
