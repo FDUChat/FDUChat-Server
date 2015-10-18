@@ -92,10 +92,11 @@ get "/users/:username/contacts" do
     user = user.first
     if not user.contactid?
       cts = Contacts.new do |c|
-        c.contacts = JSON.generate({"contacts"=>""})
+        c.contacts = JSON.generate({"contacts"=>[]})
         c.save
       end
       user.contactid = cts.id
+      user.save
     else
       cts = Contacts.find(user.contactid)
     end
@@ -104,7 +105,7 @@ get "/users/:username/contacts" do
 end
 
 #add contact
-post "/users/:username/contacts" do
+put "/users/:username/contacts" do
   user = Users.where(:username => params[:username])
   if user.size == 0
     return Error::UserOPs.no_user
@@ -119,6 +120,7 @@ post "/users/:username/contacts" do
     else
       cts = Contacts.find(user.contactid)
       cts.contacts = request.body.string
+      cts.save
     end
   end
   Success::UserOPs.update_contacts_success

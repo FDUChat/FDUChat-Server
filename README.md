@@ -4,6 +4,16 @@
 
 ###Basic Information
 
+Powered by Sinatra (Ruby)
+
+Gems rely on:
+- sinatra
+- sinatra-activerecord
+- sinatra-reloader
+- mysql
+- jpush
+
+
 ###Model
 
 ``User``
