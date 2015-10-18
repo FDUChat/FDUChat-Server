@@ -28,9 +28,6 @@ Gems rely on:
 ``Comments``
 ``INT id, TEXT mentioned(json), TEXT content``
 
-``Message``
-``INT id, INT sender, INT receiver, TEXT content``
-
 ###API
 
 ####用户操作
@@ -44,6 +41,15 @@ POST http://ip/users/:username
   "username": a,
   "password": b
 }
+
+如果成功，返回
+{
+  "id": 202,
+  "content": "register success"
+}
+
+如果密码字段缺失，返回代号 402 的错误（见Error Message）
+如果用户存在，返回代号 401 的错误
 ```
 
 #####用户登录
@@ -55,6 +61,15 @@ POST http://ip/login
   "username": a,
   "password": b
 }
+
+如果成功，返回
+{
+  "id": 201,
+  "content": "login success"
+}
+
+如果用户不存在，返回 403 的错误
+如果密码错误，返回 404 的错误
 ```
 
 #####更新用户信息
@@ -68,6 +83,8 @@ PUT http://ip/users/:username
   "location": c,
   "gender": d
 }
+
+
 ```
 
 #####检查用户是否存在
@@ -75,7 +92,7 @@ PUT http://ip/users/:username
 ```
 GET http://ip/users/:username
 
-return 1 if exists, else 0
+如果成功，返回1，否则返回0
 ```
 
 #####获得用户分组
@@ -83,7 +100,7 @@ return 1 if exists, else 0
 ```
 GET http://ip/user/:username/contacts
 
-return json
+如果成功，返回json
 {
   contact:
   [
@@ -110,6 +127,12 @@ PUT http://ip/user/:username/contacts
     ...
   ]
 }
+
+如果成功，返回
+{
+  "id": 203,
+  "content": "contact updated"
+}
 ```
 
 ####消息操作
@@ -121,8 +144,47 @@ POST http://ip/message/send
 
 {
   "sender": a,
-  "message": b,
-  "alias": [a0, a1, a2, ...]
+  "timestamp": b,
+  "message": c,
+  "alias": d
 }
 
+如果成功，返回JPush的成功发送信息（见JPush文档）
+```
+
+
+###Error Message
+
+> 所有的错误信息均以json形式返回{"id": error_id, "content": error_explaination}
+
+####基本错误
+
+1. JSON不完整或是字段缺失
+```
+{
+  "id": 400,
+  "content": "Json is not valid"
+}
+```
+
+####用户操作
+
+1. 用户已经存在
+```
+400, User already exists
+```
+
+2. 密码缺失
+```
+401, Password missed
+```
+
+3. 用户不存在
+```
+403, No such user
+```
+
+4. 密码错误
+```
+404, Wrong password
 ```

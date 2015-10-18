@@ -131,21 +131,22 @@ post "/message/send" do
   client = JPush::JPushClient.new($AppKey, $MasterSecret)
   begin
     data = JSON.parse(request.body.string)
+    payload = JPush::PushPayload.build(
+      platform: JPush::Platform.all,
+      message: JPush::Message.build(
+        msg_content: data["message"],
+        extras: {
+          "sender" => data["sender"],
+          "timestamp" => data["timestamp"]
+        }
+      ),
+      audience: JPush::Audience.build(
+        _alias: data["alias"]
+      )
+    )
   rescue
     return Error.json_fault
   end
-  payload = JPush::PushPayload.build(
-    platform: JPush::Platform.all,
-    message: JPush::Message.build(
-      msg_content: data["message"],
-      extras: {
-        "sender" => data["sender"]
-      }
-    ),
-    audience: JPush::Audience.build(
-      _alias: data["alias"]
-    )
-  )
   res = client.sendPush(payload)
   res.toJSON
 end
