@@ -145,13 +145,48 @@ POST http://ip/message/send
 {
   "sender": a,
   "timestamp": b,
-  "message": c,
-  "alias": d
+  "content": c,
+  "receiver": d,
+  "type": 1  # 1 是聊天消息, 2 是朋友圈更新消息
 }
 
 如果成功，返回JPush的成功发送信息（见JPush文档）
 ```
 
+####朋友圈操作
+
+#####发送朋友圈
+
+```
+POST http://ip/moments/send
+
+{
+  "sender": a,
+  "timestamp": b,
+  "content": c,
+  "type": 2
+}
+
+```
+
+#####获取朋友圈信息
+
+```
+GET http://ip/moments/:username
+
+返回
+{
+  "moments":
+  [
+    {
+      "timestamp": a,
+      "content": b
+    },
+    ...
+  ]
+}
+
+```
 
 ###Error Message
 

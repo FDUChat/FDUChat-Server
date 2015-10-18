@@ -54,9 +54,9 @@ end
 
 get "/users/:username" do
   if Users.where(:username => params[:username]).size == 1
-    return 1
+    return 1.to_s
   else
-    return 0
+    return 0.to_s
   end
 end
 
@@ -134,14 +134,15 @@ post "/message/send" do
     payload = JPush::PushPayload.build(
       platform: JPush::Platform.all,
       message: JPush::Message.build(
-        msg_content: data["message"],
+        msg_content: data["content"],
         extras: {
           "sender" => data["sender"],
-          "timestamp" => data["timestamp"]
+          "timestamp" => data["timestamp"],
+          "type" => 1
         }
       ),
       audience: JPush::Audience.build(
-        _alias: data["alias"]
+        _alias: [data["receiver"]]
       )
     )
   rescue
