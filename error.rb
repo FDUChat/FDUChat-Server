@@ -28,6 +28,14 @@ module Error
       Error.__basic_error(404, "Wrong password")
     end
 
+    def self.cannot_edit
+      Error.__basic_error(405, "This field cannot be modified")
+    end
+
+    def self.update_failed
+      Error.__basic_error(406, "Update user profile failed")
+    end
+
   end
 
 end

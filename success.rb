@@ -20,6 +20,10 @@ module Success
       Success.__basic_success(203, "contact updated")
     end
 
+    def self.update_profile_success
+      Success.__basic_success(204, "profile updated")
+    end
+
   end
 
 end

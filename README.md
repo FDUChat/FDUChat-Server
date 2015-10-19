@@ -84,6 +84,16 @@ PUT http://ip/users/:username
   "gender": d
 }
 
+> 只需要在json中加入希望修改的字段即可，username和contactid无法修改，修改会报错405
+
+如果成功，返回
+{
+  "id": 204,
+  "content": "profile updated"
+}
+
+如果修改了不能修改的字段（username和contactid），则报错405
+如果更新失败，则报错406
 
 ```
 
@@ -98,11 +108,11 @@ GET http://ip/users/:username
 #####获得用户分组
 
 ```
-GET http://ip/user/:username/contacts
+GET http://ip/users/:username/contacts
 
 如果成功，返回json
 {
-  contact:
+  "contact":
   [
     "group_name": a,
     "friends": [username0, username1, ...]
@@ -118,7 +128,7 @@ GET http://ip/user/:username/contacts
 PUT http://ip/user/:username/contacts
 
 {
-  contacts:
+  "contacts":
   [
     {
       "group_name": a,
@@ -222,4 +232,14 @@ GET http://ip/moments/:username
 4. 密码错误
 ```
 404, Wrong password
+```
+
+5. 修改了不能修改的字段
+```
+405, This field cannot be modified
+```
+
+6. 用户信息更新失败
+```
+406, Update user profile failed
 ```

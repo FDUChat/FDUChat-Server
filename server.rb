@@ -30,10 +30,14 @@ get "/request" do
   request.body
 end
 
+post "/" do
+  request.body.read
+end
+
 #login
 post "/login" do
   begin
-    req = JSON.parse(request.body.string)
+    req = JSON.parse(request.body.read)
   rescue
     return Error.json_fault
   end
@@ -63,7 +67,7 @@ end
 #register
 post "/users/:username" do
   begin
-    req = JSON.parse(request.body.string)
+    req = JSON.parse(request.body.read)
   rescue
     return Error.json_fault
   end
@@ -81,6 +85,35 @@ post "/users/:username" do
     return Error::UserOPs.passwd_missed
   end
   Success::UserOPs.register_success
+end
+
+#update user information
+put "/users/:username" do
+  begin
+    req = JSON.parse request.body.read
+  rescue
+    return Error.json_fault
+  end
+  if (req.has_key?("username")) or (req.has_key?("contactid"))
+    return Error::UserOPs.cannot_edit
+  end
+  user = Users.where(:username => params[:username])
+  if user.size == 0
+    return Error::UserOPs.no_user
+  end
+  user = user.first
+  puts user.methods
+  begin
+    req.each do |k,v|
+      user.send((k.to_s + "=").to_sym, v)
+    end
+  rescue => e
+    puts e.message
+    puts e.backtrace
+    return Error::UserOPs.update_failed
+  end
+  user.save
+  Success::UserOPs.update_profile_success
 end
 
 #get contact info
@@ -113,13 +146,13 @@ put "/users/:username/contacts" do
     user = user.first
     if not user.contactid?
       cts = Contacts.new do |c|
-        c.contacts = request.body.string
+        c.contacts = request.body.read
         c.save
       end
       user.contactid = cts.id
     else
       cts = Contacts.find(user.contactid)
-      cts.contacts = request.body.string
+      cts.contacts = request.body.read
       cts.save
     end
   end
@@ -130,7 +163,7 @@ end
 post "/message/send" do
   client = JPush::JPushClient.new($AppKey, $MasterSecret)
   begin
-    data = JSON.parse(request.body.string)
+    data = JSON.parse(request.body.read)
     payload = JPush::PushPayload.build(
       platform: JPush::Platform.all,
       message: JPush::Message.build(
